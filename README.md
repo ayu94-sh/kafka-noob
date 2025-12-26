@@ -1,4 +1,4 @@
-# KAFKA_NOOB
+# kafka-noob
 
 A personal Kafka playground for beginners to learn and practice Kafka infrastructure deployments using **Strimzi** on **Kubernetes (Minikube)**. This repository is intended for experimenting with Kafka, KRaft mode (no Zookeeper), Kafka UI, Kafka Connect, Schema Registry, and observability via Prometheus and Grafana — all on a local machine.
 
@@ -23,7 +23,7 @@ A personal Kafka playground for beginners to learn and practice Kafka infrastruc
 
 ## Why this repo
 
-`KAFKA_NOOB` is designed as a **safe, personal sandbox** for experimenting with Kafka infrastructure without production risk. Key objectives:
+`kafka-noob` is designed as a **safe, personal sandbox** for experimenting with Kafka infrastructure without production risk. Key objectives:
 
 * Deploy Kafka cluster in **KRaft mode** (no Zookeeper).
 * Learn Kafka **users, topics, and authentication (SCRAM)**.
