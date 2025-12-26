@@ -1,0 +1,65 @@
+# Kubernetes API version for Deployment resource
+apiVersion: apps/v1
+# Resource type for managing pod replicas
+kind: Deployment
+# Contains name and namespace information
+metadata:
+  # Name of the Grafana deployment
+  name: grafana
+  # Kubernetes namespace where deployment is created
+  namespace: kafka-noob
+# Specification for deployment configuration
+spec:
+  # Number of pod replicas (1 = single instance)
+  replicas: 1
+  # Selector to match pods belonging to this deployment
+  selector:
+    # Labels used to identify and manage pods
+    matchLabels:
+      # Label identifier for grafana application
+      app: grafana
+  # Pod template definition
+  template:
+    # Metadata for pods created by deployment
+    metadata:
+      # Labels assigned to the pods
+      labels:
+        # Label identifying grafana application
+        app: grafana
+    # Specification for the pod
+    spec:
+      # Container definitions within the pod
+      containers:
+        # Container name
+        - name: grafana
+          # Docker image (visualization and monitoring dashboard)
+          image: grafana/grafana
+          # Port definitions for the container
+          ports:
+            # Container port that Grafana listens on
+            - containerPort: 3000
+---
+# Kubernetes API version for Service resource
+apiVersion: v1
+# Resource type is Service
+kind: Service
+# Contains name and namespace information
+metadata:
+  # Name of the Service
+  name: grafana
+  # Kubernetes namespace where Service is created
+  namespace: kafka-noob
+# Specification for Service configuration
+spec:
+  # Selector to match pods that service routes traffic to
+  selector:
+    # Route to pods labeled with app: grafana
+    app: grafana
+  # Port mapping configuration
+  ports:
+    # Service port exposed to other pods/services
+    - port: 3000
+      # Target port on the pod to forward traffic to
+      targetPort: 3000
+  # Service type - NodePort allows external access via node IP and port
+  type: NodePort

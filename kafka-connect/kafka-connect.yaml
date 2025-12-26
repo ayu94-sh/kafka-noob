@@ -1,0 +1,27 @@
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaConnect
+metadata:
+  name: connect-cluster
+  namespace: kafka-noob
+spec:
+  version: 4.1.1
+  replicas: 1
+  bootstrapServers: kraft-cluster-kafka-bootstrap:9092
+  groupId: connect-cluster
+  configStorageTopic: connect-configs
+  statusStorageTopic: connect-status
+  offsetStorageTopic: connect-offsets
+  authentication:
+    type: scram-sha-512
+    username: app-user
+    passwordSecret:
+      secretName: app-user
+      password: password
+  config:
+    offset.storage.replication.factor: -1
+    config.storage.replication.factor: -1
+    status.storage.replication.factor: -1
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi

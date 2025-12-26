@@ -1,0 +1,77 @@
+apiVersion: kafka.strimzi.io/v1
+kind: KafkaUser
+metadata:
+  name: app-user
+  namespace: kafka-noob
+  labels:
+    strimzi.io/cluster: kraft-cluster
+spec:
+  authentication:
+    type: scram-sha-512
+  authorization:
+    type: simple
+    acls:
+      - resource:
+          type: topic
+          name: noob-topic
+          patternType: literal
+        operations: [Read, Write, Describe]
+        host: "*"
+      - resource:
+          type: group
+          name: noob-group
+          patternType: literal
+        operations: [Read]
+        host: "*"
+      - resource:
+          type: topic
+          name: _schemas
+          patternType: literal
+        operations: [Read, Write, Create, Describe]
+        host: "*"
+      - resource:
+          type: group
+          name: schema-registry
+          patternType: prefix
+        operations: [Read, Describe]
+        host: "*"
+      - resource:
+          type: cluster
+          name: kraft-cluster
+        operations: [Describe]
+        host: "*"
+      - resource:
+          type: topic
+          name: __consumer_offsets
+          patternType: literal
+        operations: [Describe]
+        host: "*"
+      - resource:
+          type: group
+          name: connect-cluster
+        operations:
+        - Read
+      - resource:
+          type: topic
+          name: connect-configs
+        operations:
+        - Read
+        - Describe
+        - Write
+        - Create
+      - resource:
+          type: topic
+          name: connect-status
+        operations:
+        - Read
+        - Describe
+        - Write
+        - Create
+      - resource:
+          type: topic
+          name: connect-offsets
+        operations:
+        - Read
+        - Describe
+        - Write
+        - Create

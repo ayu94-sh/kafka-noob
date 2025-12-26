@@ -1,0 +1,76 @@
+# Kubernetes API version for Deployment resource
+apiVersion: apps/v1
+# Kind defines the resource type as Deployment
+kind: Deployment
+# Metadata section contains deployment name and namespace
+metadata:
+  # Name of the Prometheus deployment
+  name: prometheus
+  # Kubernetes namespace where the deployment will be created
+  namespace: kafka-noob
+# Specification for the deployment configuration
+spec:
+  # Number of replica pods for Prometheus (1 means single instance)
+  replicas: 1
+  # Selector to match pods belonging to this deployment
+  selector:
+    # Labels used to identify and manage pods
+    matchLabels:
+      # Label to identify this as prometheus application
+      app: prometheus
+  # Pod template definition
+  template:
+    # Metadata for the pods created by this deployment
+    metadata:
+      # Labels assigned to the pods
+      labels:
+        # Label identifying this as prometheus application
+        app: prometheus
+    # Specification for the pod
+    spec:
+      # Container definitions within the pod
+      containers:
+        # First and only container in the pod
+        - name: prometheus
+          # Docker image for Prometheus (time-series metrics database)
+          image: prom/prometheus
+          # Command-line arguments to pass to Prometheus
+          args:
+            # Path to Prometheus configuration file
+            - "--config.file=/etc/prometheus/prometheus.yml"
+          # Volume mounts - bind storage to container filesystem
+          volumeMounts:
+            # Mount the config volume
+            - name: config
+              # Path inside container where config volume is mounted
+              mountPath: /etc/prometheus
+      # Volume definitions for the pod
+      volumes:
+        # First and only volume - contains Prometheus configuration
+        - name: config
+          # ConfigMap as volume source (reads data from Kubernetes ConfigMap)
+          configMap:
+            # Name of the ConfigMap to use
+            name: prometheus-config
+---
+# Kubernetes API version for ConfigMap resource
+apiVersion: v1
+# Kind defines the resource type as ConfigMap
+kind: ConfigMap
+# Metadata section contains ConfigMap name and namespace
+metadata:
+  # Name of the ConfigMap
+  name: prometheus-config
+  # Kubernetes namespace where the ConfigMap will be created
+  namespace: kafka-noob
+# Data section contains key-value pairs stored in the ConfigMap
+data:
+  # Key name for the Prometheus configuration file
+  prometheus.yml: |
+    global:
+      scrape_interval: 15s
+    scrape_configs:
+      - job_name: 'kafka'
+        static_configs:
+          - targets:
+              - kraft-cluster-kafka-bootstrap:9092
